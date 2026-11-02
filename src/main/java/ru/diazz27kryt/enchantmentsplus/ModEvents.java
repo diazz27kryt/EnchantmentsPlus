@@ -21,6 +21,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -57,7 +58,7 @@ public final class ModEvents {
         }
 
         ItemStack tool = player.getMainHandStack();
-        if (tool.isEmpty() || !(tool.getItem() instanceof net.minecraft.item.PickaxeItem)) {
+        if (tool.isEmpty() || !tool.isIn(ItemTags.PICKAXES)) {
             return;
         }
 
@@ -117,16 +118,16 @@ public final class ModEvents {
         if (component == null) return ActionResult.PASS;
 
         NbtCompound data = component.copyNbt();
-        if (!data.containsUuid(SHARD_TARGET)) return ActionResult.PASS;
+        if (data.getString(SHARD_TARGET).orElse("").isEmpty()) return ActionResult.PASS;
 
-        if (!world.isClient && player instanceof ServerPlayerEntity serverPlayer) {
-            String dimension = data.getString(SHARD_DIMENSION);
+        if (player instanceof ServerPlayerEntity serverPlayer) {
+            String dimension = data.getString(SHARD_DIMENSION).orElse("unknown");
             serverPlayer.sendMessage(Text.translatable(
                     "message.enchantmentsplus.trident_location",
                     dimension,
-                    data.getInt(SHARD_X),
-                    data.getInt(SHARD_Y),
-                    data.getInt(SHARD_Z)
+                    data.getInt(SHARD_X).orElse(0),
+                    data.getInt(SHARD_Y).orElse(0),
+                    data.getInt(SHARD_Z).orElse(0)
             ), true);
         }
         return ActionResult.SUCCESS;
@@ -162,7 +163,7 @@ public final class ModEvents {
         shard.set(DataComponentTypes.MAX_STACK_SIZE, 1);
 
         NbtCompound data = new NbtCompound();
-        data.putUuid(SHARD_TARGET, targetId);
+        data.putString(SHARD_TARGET, targetId.toString());
         writePosition(data, trident, world);
         shard.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(data));
 
@@ -181,9 +182,9 @@ public final class ModEvents {
         BlockPos pos = trident.getBlockPos();
         String dimension = world.getRegistryKey().getValue().toString();
         if (!dimension.equals(data.getString(SHARD_DIMENSION))
-                || data.getInt(SHARD_X) != pos.getX()
-                || data.getInt(SHARD_Y) != pos.getY()
-                || data.getInt(SHARD_Z) != pos.getZ()) {
+                || data.getInt(SHARD_X).orElse(0) != pos.getX()
+                || data.getInt(SHARD_Y).orElse(0) != pos.getY()
+                || data.getInt(SHARD_Z).orElse(0) != pos.getZ()) {
             writePosition(data, trident, world);
             shard.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(data));
         }
@@ -204,7 +205,7 @@ public final class ModEvents {
             NbtComponent component = stack.get(DataComponentTypes.CUSTOM_DATA);
             if (component != null) {
                 NbtCompound data = component.copyNbt();
-                if (data.containsUuid(SHARD_TARGET) && targetId.equals(data.getUuid(SHARD_TARGET))) {
+                if (targetId.toString().equals(data.getString(SHARD_TARGET).orElse(""))) {
                     return stack;
                 }
             }
@@ -213,7 +214,7 @@ public final class ModEvents {
     }
 
     private static void pullPlayerToTrident(ServerPlayerEntity player, TridentEntity trident) {
-        Vec3d difference = trident.getPos().subtract(player.getPos());
+        Vec3d difference = new Vec3d(trident.getX() - player.getX(), trident.getY() - player.getY(), trident.getZ() - player.getZ());
         double distance = difference.length();
         if (distance < 1.35) return;
 
@@ -226,7 +227,6 @@ public final class ModEvents {
         }
 
         player.setVelocity(velocity);
-        player.scheduleVelocityUpdate();
     }
 
     private static int getEnchantmentLevel(ServerWorld world, ItemStack stack, String path) {
