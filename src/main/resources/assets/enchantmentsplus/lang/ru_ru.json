@@ -2,5 +2,8 @@
   "enchantment.enchantmentsplus.shocked": "Шокированный",
   "enchantment.enchantmentsplus.miner": "Шахтёр",
   "enchantment.enchantmentsplus.trident_tracker": "Верность",
-  "enchantment.enchantmentsplus.poseidon": "Посейдон"
+  "enchantment.enchantmentsplus.poseidon": "Посейдон",
+  "item.enchantmentsplus.trident_shard": "Осколок трезубца",
+  "message.enchantmentsplus.shard_given": "Осколок трезубца выдан",
+  "message.enchantmentsplus.trident_location": "Трезубец: %2$s %3$s %4$s (%1$s)"
 }
