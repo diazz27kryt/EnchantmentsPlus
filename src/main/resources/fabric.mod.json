@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "enchantmentsplus",
+  "version": "${version}",
+  "name": "EnchantmentsPlus",
+  "description": "Custom enchantments for Minecraft 1.21.11.",
+  "authors": ["diazz27kryt", "ChatGPT"],
+  "environment": "*",
+  "entrypoints": {
+    "main": ["ru.diazz27kryt.enchantmentsplus.EnchantmentsPlus"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.0",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
