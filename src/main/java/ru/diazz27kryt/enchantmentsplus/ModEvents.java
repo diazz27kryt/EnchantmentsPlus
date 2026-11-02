@@ -37,6 +37,7 @@ import net.minecraft.world.World;
 import java.util.UUID;
 
 public final class ModEvents {
+    private static final String SHARD_GIVEN_TAG = "enchantmentsplus_shard_given";
     private static final String SHARD_TARGET = "EnchantmentsPlusTarget";
     private static final String SHARD_DIMENSION = "Dimension";
     private static final String SHARD_X = "X";
@@ -143,7 +144,10 @@ public final class ModEvents {
                 int poseidonLevel = getEnchantmentLevel(world, thrownStack, "poseidon");
 
                 if (trackerLevel > 0) {
-                    ensureShard(owner, trident, world);
+                    if (!trident.getCommandTags().contains(SHARD_GIVEN_TAG)) {
+                        ensureShard(owner, trident, world);
+                        trident.addCommandTag(SHARD_GIVEN_TAG);
+                    }
                     updateShard(owner, trident, world);
                 }
 
