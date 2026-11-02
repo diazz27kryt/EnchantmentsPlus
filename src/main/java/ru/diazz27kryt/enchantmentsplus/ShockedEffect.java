@@ -36,7 +36,7 @@ public record ShockedEffect() implements EnchantmentEntityEffect {
         world.spawnEntity(bolt);
 
         // Cosmetic lightning does not deal damage itself, so apply the damage once.
-        victim.damage(world.getDamageSources().lightningBolt(), 5.0F);
+        victim.damage(world, world.getDamageSources().lightningBolt(), 5.0F);
     }
 
     @Override
