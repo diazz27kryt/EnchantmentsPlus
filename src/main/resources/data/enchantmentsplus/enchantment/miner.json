@@ -1,7 +1,7 @@
 {
   "description": { "translate": "enchantment.enchantmentsplus.miner" },
-  "supported_items": "#minecraft:enchantable/mining",
-  "primary_items": "#minecraft:enchantable/mining",
+  "supported_items": "#minecraft:pickaxes",
+  "primary_items": "#minecraft:pickaxes",
   "weight": 3,
   "max_level": 2,
   "min_cost": { "base": 12, "per_level_above_first": 12 },
